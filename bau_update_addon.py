@@ -1,0 +1,88 @@
+import bpy
+import os
+import sys
+import requests
+import json
+import addon_utils
+import tempfile
+import shutil
+import zipfile
+import glob
+
+
+def update_addon(addon_entry, tag):
+
+    wm = bpy.context.window_manager
+    addon = sys.modules.get(addon_entry.name)
+    
+    git_url = addon.bl_info['git_url'].replace("github.com/", "api.github.com/repos/")
+    response_releases = requests.get(git_url + "/releases")
+
+    addon_entry.connection_status = "Connected."
+
+    #try:
+    if response_releases.status_code == 200:
+        json_releases = response_releases.json()
+        
+        found = False
+        for release in json_releases:
+            if release['tag_name'] == tag:
+                download_url = release['zipball_url']
+                found = True
+                break
+        
+        if found:
+            directory = tempfile.mkdtemp()
+            download_path = os.path.join(directory, addon_entry.name + "_" + tag + ".zip")
+            try:
+                addon_zip = download_repackage_zip(download_url, directory, download_path)
+            except Exception as e:
+                print(e)
+                shutil.rmtree(directory)
+            
+            # addon_utils.
+            
+            # shutil.rmtree(directory)
+
+            return {'FINISHED'}
+
+        else:
+            return {'CANCELLED'}
+        
+
+    elif response_releases.status_code == 403:
+        addon_entry.connection_status = "Rate limit exceeded!"
+        return {'CANCELLED'}
+
+    #except:
+    #    addon_entry.connection_status = "Connection Failed!"
+    #    return {'CANCELLED'}
+
+    # uninstall the addon (necessary?)
+
+    # install the addon
+
+    return
+
+
+def download_repackage_zip(url, directory, save_path, chunk_size=128):
+    r = requests.get(url, stream=True)
+    with open(save_path, 'wb') as fd:
+        for chunk in r.iter_content(chunk_size=chunk_size):
+            fd.write(chunk)
+
+    with zipfile.ZipFile(save_path, 'r') as zip_ref:
+        extracted_dir = zip_ref.extractall(directory)
+    
+    os.remove(save_path)
+
+    init = glob.glob(directory + "/**/__init__.py", recursive = True)[0]
+    addon_dir = os.path.dirname(init)
+    addon_name = os.path.basename(addon_dir)
+
+    shutil.copytree(addon_dir, os.path.join(directory, 'temp', addon_name))
+    temp_folder = os.path.join(directory, 'temp')
+
+    new_zip = shutil.make_archive(os.path.join(directory, addon_name), 'zip', temp_folder)
+    
+    return new_zip
