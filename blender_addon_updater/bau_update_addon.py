@@ -39,6 +39,7 @@ def update_addon(addon_entry, tag):
                     print(e)
                     shutil.rmtree(directory)
                 
+                return {'FINISHED'} # For testing
                 if addon_entry.name == os.path.splitext(os.path.basename(addon_zip))[0]:
                     bpy.ops.wm.addon_install(overwrite=True, target='DEFAULT', filepath=addon_zip)
                 else:

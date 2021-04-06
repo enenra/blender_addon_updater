@@ -9,6 +9,12 @@ import time
 rel_ver = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+")
 dev_ver = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+\-\w+\.[0-9]{1,}")
 
+tags = {
+    'dev': 0,
+    'alpha': 1,
+    'beta': 2,
+    'rc': 3
+}
 
 def check_update(addon_entry, current_version):
 
@@ -59,17 +65,27 @@ def check_update(addon_entry, current_version):
                 latest_dev_ver_name = sorted(dev_versions, reverse=True)[0]
                 base_version = latest_dev_ver_name[:latest_dev_ver_name.find("-")]
                 latest_dev_version = tuple(map(int, base_version[1:].split('.')))
-                dev_version = latest_dev_ver_name[latest_dev_ver_name.find("-") + 1:]
-                dev_version = dev_version[dev_version.find(".") + 1:]
 
-                if current_version < latest_dev_version or current_version < latest_rel_version:
-                    addon_entry.dev_ver_needs_update = True
-                elif current_version == latest_dev_version and addon.bl_info['dev_version'] < int(dev_version):
-                    addon_entry.dev_ver_needs_update = True
-                else:
+                dev_tag = latest_dev_ver_name[latest_dev_ver_name.find("-") + 1:]
+                dev_tag = dev_tag[:dev_tag.find(".")]
+
+                if dev_tag not in tags:
                     addon_entry.dev_ver_needs_update = False
-                    
-                addon_entry.latest_dev_ver_name = latest_dev_ver_name[1:]
+                
+                else:
+                    dev_version = latest_dev_ver_name[latest_dev_ver_name.find("-") + 1:]
+                    dev_version = dev_version[dev_version.find(".") + 1:]
+
+                    if current_version < latest_dev_version or current_version < latest_rel_version:
+                        addon_entry.dev_ver_needs_update = True
+                    elif current_version == latest_dev_version and tags[addon.bl_info['dev_tag']] < tags[dev_tag]:
+                        addon_entry.dev_ver_needs_update = True
+                    elif current_version == latest_dev_version and tags[addon.bl_info['dev_tag']] == tags[dev_tag] and addon.bl_info['dev_version'] < int(dev_version):
+                        addon_entry.dev_ver_needs_update = True
+                    else:
+                        addon_entry.dev_ver_needs_update = False
+                        
+                    addon_entry.latest_dev_ver_name = latest_dev_ver_name[1:]
             
             # Special case where there is a newer release version than the installed dev version
             elif len(dev_versions) < 1 and current_version < latest_rel_version:

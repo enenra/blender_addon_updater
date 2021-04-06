@@ -4,6 +4,7 @@ bl_info = {
     "author": "enenra",
     "version": (0, 1, 0),
     "dev_version": 1,
+    "dev_tag": 'alpha',
     "blender": (2, 91, 0),
     "location": "Add-ons",
     "warning": "",

@@ -41,7 +41,7 @@ class BAU_AddonPreferences(AddonPreferences):
             col = row.column(align=True)
             col.alert = True
             col.alignment = 'RIGHT'
-            col.label(text= str(addon_version) + "-alpha." + str(self.dev_ver), icon='CANCEL')
+            col.label(text= "Development Version: " + str(addon_version) + "-dev." + str(self.dev_ver), icon='SETTINGS')
 
         layout.label(text="Registered Addons:", icon='FILE')
 
