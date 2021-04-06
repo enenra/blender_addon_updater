@@ -7,6 +7,7 @@ from bpy.props  import StringProperty, IntProperty, BoolProperty
 from .bau_check_update  import check_update
 from .bau_update_addon  import update_addon
 
+
 class BAU_OT_RegisterAddon(Operator):
     """Registers the Addon with Blender Addon Updater"""
     bl_idname = "wm.bau_register_addon"

@@ -3,7 +3,6 @@ import os
 import sys
 import requests
 import json
-import addon_utils
 import tempfile
 import shutil
 import zipfile
@@ -20,49 +19,48 @@ def update_addon(addon_entry, tag):
 
     addon_entry.connection_status = "Connected."
 
-    #try:
-    if response_releases.status_code == 200:
-        json_releases = response_releases.json()
-        
-        found = False
-        for release in json_releases:
-            if release['tag_name'] == tag:
-                download_url = release['zipball_url']
-                found = True
-                break
-        
-        if found:
-            directory = tempfile.mkdtemp()
-            download_path = os.path.join(directory, addon_entry.name + "_" + tag + ".zip")
-            try:
-                addon_zip = download_repackage_zip(download_url, directory, download_path)
-            except Exception as e:
-                print(e)
+    try:
+        if response_releases.status_code == 200:
+            json_releases = response_releases.json()
+            
+            found = False
+            for release in json_releases:
+                if release['tag_name'] == tag:
+                    download_url = release['zipball_url']
+                    found = True
+                    break
+            
+            if found:
+                directory = tempfile.mkdtemp()
+                download_path = os.path.join(directory, addon_entry.name + "_" + tag + ".zip")
+                try:
+                    addon_zip = download_repackage_zip(download_url, directory, download_path)
+                except Exception as e:
+                    print(e)
+                    shutil.rmtree(directory)
+                
+                if addon_entry.name == os.path.splitext(os.path.basename(addon_zip))[0]:
+                    bpy.ops.wm.addon_install(overwrite=True, target='DEFAULT', filepath=addon_zip)
+                else:
+                    bpy.ops.wm.addon_remove(module=addon_entry.name)
+                    bpy.ops.wm.addon_install(overwrite=False, target='DEFAULT', filepath=addon_zip)
+                
                 shutil.rmtree(directory)
-            
-            # addon_utils.
-            
-            # shutil.rmtree(directory)
 
-            return {'FINISHED'}
+                return {'FINISHED'}
 
-        else:
+            else:
+                return {'CANCELLED'}
+            
+
+        elif response_releases.status_code == 403:
+            addon_entry.connection_status = "Rate limit exceeded!"
             return {'CANCELLED'}
-        
 
-    elif response_releases.status_code == 403:
-        addon_entry.connection_status = "Rate limit exceeded!"
+    except Exception as e:
+        print(e)
+        addon_entry.connection_status = "Connection Failed!"
         return {'CANCELLED'}
-
-    #except:
-    #    addon_entry.connection_status = "Connection Failed!"
-    #    return {'CANCELLED'}
-
-    # uninstall the addon (necessary?)
-
-    # install the addon
-
-    return
 
 
 def download_repackage_zip(url, directory, save_path, chunk_size=128):
