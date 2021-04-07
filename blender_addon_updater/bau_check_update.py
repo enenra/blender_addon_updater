@@ -22,8 +22,12 @@ def check_update(addon_entry, current_version):
     addon = sys.modules.get(addon_entry.name)
     git_url = addon.bl_info['git_url'].replace("github.com/", "api.github.com/repos/")
 
-    response_tags = requests.get(git_url + "/tags")
-    response_releases = requests.get(git_url + "/releases")
+    try:
+        response_tags = requests.get(git_url + "/tags")
+        response_releases = requests.get(git_url + "/releases")
+    except:
+        addon_entry.connection_status = "Connection Failed!"
+        return {'CANCELLED'}
 
     addon_entry.connection_status = "Connected."
 
