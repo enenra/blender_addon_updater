@@ -33,19 +33,27 @@ def update_addon(addon_entry, tag):
             if found:
                 directory = tempfile.mkdtemp()
                 download_path = os.path.join(directory, addon_entry.name + "_" + tag + ".zip")
+
                 try:
                     addon_zip = download_repackage_zip(download_url, directory, download_path)
                 except Exception as e:
                     print(e)
                     shutil.rmtree(directory)
+                    return {'CANCELLED'}
                 
-                return {'FINISHED'} # For testing
-                if addon_entry.name == os.path.splitext(os.path.basename(addon_zip))[0]:
-                    bpy.ops.wm.addon_install(overwrite=True, target='DEFAULT', filepath=addon_zip)
-                else:
-                    bpy.ops.wm.addon_remove(module=addon_entry.name)
-                    bpy.ops.wm.addon_install(overwrite=False, target='DEFAULT', filepath=addon_zip)
-                
+                new_name = os.path.splitext(os.path.basename(addon_zip))[0]
+
+                try:
+                    bpy.ops.preferences.addon_remove(module=addon_entry.name)
+                    bpy.ops.preferences.addon_install(overwrite=True, target='DEFAULT', filepath=addon_zip)
+
+                    bpy.ops.preferences.addon_enable(module=new_name)
+                    bpy.ops.preferences.addon_show(module=new_name)
+                    
+                except Exception as e:
+                    print(e)
+                    return {'CANCELLED'}
+
                 shutil.rmtree(directory)
 
                 return {'FINISHED'}
