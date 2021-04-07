@@ -5,7 +5,7 @@ bl_info = {
     "version": (0, 1, 0),
     "dev_version": 1,
     "dev_tag": 'alpha',
-    "blender": (2, 91, 0),
+    "blender": (2, 92, 0),
     "location": "Add-ons",
     "warning": "",
     "wiki_url": "",
@@ -48,6 +48,7 @@ def register():
         bpy.utils.register_class(cls)
 
     bpy.types.WindowManager.bau = PointerProperty(type=BAU_WindowManager)
+    bpy.app.timers.register(bau_purge)
 
 
 def unregister():
@@ -72,6 +73,20 @@ def load_handler(dummy):
         check_update(entry, addon.bl_info['version'])
     
     # TODO: Add functionality to purge addon entries of addons that aren't installed anymore.
+
+
+def bau_purge():
+
+    wm = bpy.context.window_manager
+
+    try:
+        for idx in range(0, len(wm.bau.addons)):
+            if wm.bau.addons[idx].name not in sys.modules:
+                wm.bau.addons.remove(idx)
+            return 10
+    except:
+        return 10
+
 
 
 if __name__ == "__main__":

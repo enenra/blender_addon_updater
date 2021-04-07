@@ -46,10 +46,13 @@ class BAU_AddonPreferences(AddonPreferences):
         layout.label(text="Registered Addons:", icon='FILE')
 
         for entry in wm.bau.addons:
-            addon = sys.modules.get(entry.name)
-
-            if addon is None:
-                return
+            try:
+                addon = sys.modules.get(entry.name)
+            except KeyError:
+                for idx in range(0, len(wm.bau.addons)):
+                    if wm.bau.addons[idx].name not in sys.modules:
+                        wm.bau.addons.remove(idx)
+                continue
 
             box = layout.box()
             row = box.row()
