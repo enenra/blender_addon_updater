@@ -33,16 +33,18 @@ class BAU_AddonPreferences(AddonPreferences):
 
         draw_bau_ui(self, context, layout)
 
-        row = layout.row()
+        top_box = layout.box()
+        row = top_box.row()
+        row.label(text="Registered Addons:", icon='FILE')
+
+        col = row.column(align=True)
+        row = col.row()
         row.scale_y = 1.5
         row.scale_x = 1.5
         row.alignment = 'RIGHT'
         if len(wm.bau.addons) < 1:
             row.enabled = False
         row.operator('wm.bau_check_all_updates', text="", icon='FILE_REFRESH')
-
-        top_box = layout.box()
-        top_box.label(text="Registered Addons:", icon='FILE')
 
         for entry in wm.bau.addons:
             try:
@@ -54,8 +56,8 @@ class BAU_AddonPreferences(AddonPreferences):
                         break
                 continue
             
-            #if entry.name == __package__:
-            #    continue
+            if entry.name == __package__:
+                continue
 
             box = top_box.box()
             row = box.row()

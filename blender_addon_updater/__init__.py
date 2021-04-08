@@ -3,7 +3,7 @@ bl_info = {
     "description": "",
     "author": "enenra",
     "version": (0, 1, 0),
-    "dev_version": 2,
+    "dev_version": 3,
     "dev_tag": 'alpha',
     "blender": (2, 92, 0),
     "location": "Add-ons",
