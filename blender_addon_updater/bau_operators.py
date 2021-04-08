@@ -6,7 +6,7 @@ from bpy.props  import StringProperty, IntProperty, BoolProperty
 
 from .bau_check_update  import check_update
 from .bau_update_addon  import update_addon
-
+from .bau_preferences   import save_config
 
 class BAU_OT_RegisterAddon(Operator):
     """Registers the Addon with Blender Addon Updater"""
@@ -64,6 +64,7 @@ class BAU_OT_UnregisterAddon(Operator):
         for idx in range(0, len(wm.bau.addons)):
             if wm.bau.addons[idx].name == self.name:
                 wm.bau.addons.remove(idx)
+                break
 
         return {'FINISHED'}
 
@@ -89,6 +90,28 @@ class BAU_OT_CheckUpdates(Operator):
             result = check_update(addon_entry, addon.bl_info['version'])
 
         return result
+
+
+class BAU_OT_CheckAllUpdates(Operator):
+    """Checks whether any registered addon has updates available"""
+    bl_idname = "wm.bau_check_all_updates"
+    bl_label = "Check All for Updates"
+    bl_options = {'REGISTER', 'UNDO'}
+
+
+    def execute(self, context):
+
+        wm = context.window_manager
+        
+        for addon_entry in wm.bau.addons:
+            addon = sys.modules.get(addon_entry.name)
+            result = check_update(addon_entry, addon.bl_info['version'])
+            if result == {'FINISHED'}:
+                print("BAU: Checked " + addon_entry.name + " for updates.")
+            else:
+                print("BAU: Unable to check " + addon_entry.name + " for updates.")
+
+        return {'FINISHED'}
 
 
 class BAU_OT_UpdateAddon(Operator):
@@ -139,5 +162,7 @@ class BAU_OT_SaveConfig(Operator):
         if self.name in wm.bau.addons:
             addon_entry = wm.bau.addons[self.name]
             addon_entry.config = self.config
+
+        save_config()
 
         return {'FINISHED'}

@@ -8,6 +8,7 @@ import addon_utils
 from bpy.types  import Operator, AddonPreferences
 from bpy.props  import BoolProperty, StringProperty, EnumProperty, IntProperty
 
+from .bau_ui    import draw_bau_ui, get_config_json, set_config_from_json
 
 def get_addon():
     return sys.modules.get(__package__)
@@ -20,9 +21,6 @@ class BAU_AddonPreferences(AddonPreferences):
     dev_mode: BoolProperty(
         default = get_addon().bl_info['dev_version'] > 0
     )
-    dev_ver: IntProperty(
-        default = get_addon().bl_info['dev_version']
-    )
 
     def draw(self, context):
         layout = self.layout
@@ -30,34 +28,39 @@ class BAU_AddonPreferences(AddonPreferences):
         bau = get_addon()
 
         self.dev_mode = get_addon().bl_info['dev_version'] > 0
-        self.dev_ver = bau.bl_info['dev_version']
 
         addon_version = str(bau.bl_info['version']).replace("(","").replace(")","").replace(", ", ".")
 
-        if self.dev_mode:
-            row = layout.row()
-            row.label(text="")
-            
-            col = row.column(align=True)
-            col.alert = True
-            col.alignment = 'RIGHT'
-            col.label(text= "Development Version: " + str(addon_version) + "-dev." + str(self.dev_ver), icon='SETTINGS')
+        draw_bau_ui(self, context, layout)
 
-        layout.label(text="Registered Addons:", icon='FILE')
+        row = layout.row()
+        row.scale_y = 1.5
+        row.scale_x = 1.5
+        row.alignment = 'RIGHT'
+        if len(wm.bau.addons) < 1:
+            row.enabled = False
+        row.operator('wm.bau_check_all_updates', text="", icon='FILE_REFRESH')
+
+        top_box = layout.box()
+        top_box.label(text="Registered Addons:", icon='FILE')
 
         for entry in wm.bau.addons:
             try:
                 addon = sys.modules.get(entry.name)
             except KeyError:
                 for idx in range(0, len(wm.bau.addons)):
-                    if wm.bau.addons[idx].name not in sys.modules:
+                    if addon_utils.check(wm.bau.addons[idx].name) == (False, False):
                         wm.bau.addons.remove(idx)
+                        break
                 continue
+            
+            #if entry.name == __package__:
+            #    continue
 
-            box = layout.box()
+            box = top_box.box()
             row = box.row()
             version = str(addon.bl_info['version']).replace("(", "").replace(")", "").replace(", ", ".")
-            row.label(text= addon.bl_info['category'] + ": " + addon.bl_info['name'] + " " + version)
+            row.label(text= addon.bl_info['category'] + ": " + addon.bl_info['name'] + " " + version, icon=addon.bl_info['support'])
 
             if self.dev_mode:
                 col = row.column(align=True)
@@ -93,3 +96,23 @@ class BAU_AddonPreferences(AddonPreferences):
                 split = row.split()
                 split.alignment = 'RIGHT'
                 split.label(text= "Last check: " + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(entry.last_check)))
+
+
+def save_config():
+
+    path = os.path.join(bpy.utils.user_resource('CONFIG'), 'blender_addon_updater.cfg')
+
+    data = get_config_json()
+    
+    with open(path, 'w') as cfg_file:
+        json.dump(data, cfg_file, indent = 4)
+
+
+def load_config():
+
+    path = os.path.join(bpy.utils.user_resource('CONFIG'), 'blender_addon_updater.cfg')
+
+    if os.path.exists(path):
+        with open(path) as cfg_file:
+            data = json.load(cfg_file)
+            set_config_from_json(data)

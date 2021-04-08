@@ -92,7 +92,7 @@ def check_update(addon_entry, current_version):
                     addon_entry.latest_dev_ver_name = latest_dev_ver_name[1:]
             
             # Special case where there is a newer release version than the installed dev version
-            elif len(dev_versions) < 1 and current_version < latest_rel_version:
+            if len(rel_versions) > 0 and len(dev_versions) < 1 and current_version < latest_rel_version:
                 addon_entry.dev_ver_needs_update = True
                 addon_entry.latest_dev_ver_name = latest_rel_ver_name[1:]
 
@@ -120,7 +120,8 @@ def check_update(addon_entry, current_version):
             addon_entry.connection_status = "Rate limit exceeded!"
             return {'CANCELLED'}
     
-    except:
+    except Exception as e:
+        print(e)
         addon_entry.connection_status = "Connection Failed!"
         return {'CANCELLED'}
 
