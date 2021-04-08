@@ -80,7 +80,7 @@ def check_update(addon_entry, current_version):
                     dev_version = latest_dev_ver_name[latest_dev_ver_name.find("-") + 1:]
                     dev_version = dev_version[dev_version.find(".") + 1:]
 
-                    if current_version < latest_dev_version or current_version < latest_rel_version:
+                    if current_version < latest_dev_version or len(rel_versions) > 0 and current_version < latest_rel_version:
                         addon_entry.dev_ver_needs_update = True
                     elif current_version == latest_dev_version and tags[addon.bl_info['dev_tag']] < tags[dev_tag]:
                         addon_entry.dev_ver_needs_update = True
