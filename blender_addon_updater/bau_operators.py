@@ -17,12 +17,9 @@ class BAU_OT_RegisterAddon(Operator):
 
     name: StringProperty()
 
-    display_changelog: BoolProperty(
-        default = False
-    )
-    dev_mode: BoolProperty(
-        default = False
-    )
+    display_changelog: BoolProperty()
+
+    dev_mode: BoolProperty()
 
 
     def execute(self, context):
@@ -125,6 +122,8 @@ class BAU_OT_UpdateAddon(Operator):
 
     config: StringProperty()
 
+    display_instructions: BoolProperty()
+
 
     def execute(self, context):
 
@@ -135,12 +134,20 @@ class BAU_OT_UpdateAddon(Operator):
             addon_entry = wm.bau.addons[self.name]
             addon_entry.config = self.config
 
-            if not addon_entry.dev_mode or addon_entry.dev_mode and addon_entry.rel_ver_needs_update:
-                result = update_addon(addon_entry, "v" + addon_entry.latest_rel_ver_name)
+            # First click of button
+            if self.display_instructions:
+                addon_entry.display_instructions = True
+                return {'FINISHED'}
+            
+            # Second click of button
             else:
-                result = update_addon(addon_entry, "v" + addon_entry.latest_dev_ver_name)
-                
-        return result
+                addon_entry.display_instructions = False
+                if not addon_entry.dev_mode or addon_entry.dev_mode and addon_entry.rel_ver_needs_update:
+                    result = update_addon(addon_entry, "v" + addon_entry.latest_rel_ver_name)
+                else:
+                    result = update_addon(addon_entry, "v" + addon_entry.latest_dev_ver_name)
+                    
+                return result
 
 
 class BAU_OT_SaveConfig(Operator):

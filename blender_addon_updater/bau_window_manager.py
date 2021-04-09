@@ -18,6 +18,22 @@ from bpy.types import (Panel,
                        )
 
 
+def update_rel_ver_needs_update(self, context):
+    wm = context.window_manager
+
+    if not self.rel_ver_needs_update and not self.dev_ver_needs_update:
+        if self.display_instructions:
+            self.display_instructions = False
+
+
+def update_dev_ver_needs_update(self, context):
+    wm = context.window_manager
+
+    if not self.rel_ver_needs_update and not self.dev_ver_needs_update:
+        if self.display_instructions:
+            self.display_instructions = False
+
+
 class BAU_Addon(PropertyGroup):
 
     name: StringProperty()
@@ -28,16 +44,22 @@ class BAU_Addon(PropertyGroup):
         default = False
     )
 
+    display_instructions: BoolProperty(
+        default = False
+    )
+
     latest_rel_ver_name: StringProperty()
     rel_changelog: StringProperty()
     rel_ver_needs_update: BoolProperty(
-        default = False
+        default = False,
+        update = update_rel_ver_needs_update
     )
 
     latest_dev_ver_name: StringProperty()
     dev_changelog: StringProperty()
     dev_ver_needs_update: BoolProperty(
-        default = False
+        default = False,
+        update = update_dev_ver_needs_update
     )
 
     connection_status: StringProperty()

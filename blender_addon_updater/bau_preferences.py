@@ -10,6 +10,7 @@ from bpy.props  import BoolProperty, StringProperty, EnumProperty, IntProperty
 
 from .bau_ui    import draw_bau_ui, get_config_json, set_config_from_json
 
+
 def get_addon():
     return sys.modules.get(__package__)
 
