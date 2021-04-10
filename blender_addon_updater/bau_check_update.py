@@ -6,8 +6,8 @@ import json
 import time
 
 
-rel_ver = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+")
-dev_ver = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+\-\w+\.[0-9]{1,}")
+rel_ver = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+$")
+dev_ver = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+\-\w+\.[0-9]{1,}$")
 
 tags = {
     'dev': 0,
