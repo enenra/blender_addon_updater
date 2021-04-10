@@ -32,7 +32,8 @@ class BAU_AddonPreferences(AddonPreferences):
 
         addon_version = str(bau.bl_info['version']).replace("(","").replace(")","").replace(", ", ".")
 
-        draw_bau_ui(self, context, layout)
+        if __package__ in wm.bau.addons:
+            draw_bau_ui(self, context, layout)
 
         top_box = layout.box()
         row = top_box.row()
