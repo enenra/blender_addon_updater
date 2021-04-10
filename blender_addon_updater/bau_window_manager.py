@@ -70,7 +70,7 @@ class BAU_Addon(PropertyGroup):
 
     dev_mode: BoolProperty(
         name = "Dev Mode",
-        description = "Whether to include development version",
+        description = "Whether to include development versions",
         default = False
     )
 
