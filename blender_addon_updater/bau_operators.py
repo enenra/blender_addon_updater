@@ -36,7 +36,7 @@ class BAU_OT_RegisterAddon(Operator):
             entry.display_changelog = self.display_changelog
             entry.dev_mode = self.dev_mode
 
-            check_update(entry, addon.bl_info['version'])
+            check_update(entry)
 
         else:
             return {'CANCELLED'}
@@ -84,7 +84,7 @@ class BAU_OT_CheckUpdates(Operator):
         result = {'CANCELLED'}
         if self.name in wm.bau.addons and addon:
             addon_entry = wm.bau.addons[self.name]
-            result = check_update(addon_entry, addon.bl_info['version'])
+            result = check_update(addon_entry)
 
         return result
 
@@ -101,8 +101,7 @@ class BAU_OT_CheckAllUpdates(Operator):
         wm = context.window_manager
         
         for addon_entry in wm.bau.addons:
-            addon = sys.modules.get(addon_entry.name)
-            result = check_update(addon_entry, addon.bl_info['version'])
+            result = check_update(addon_entry)
             if result == {'FINISHED'}:
                 print("BAU: Checked " + addon_entry.name + " for updates.")
             else:
@@ -146,6 +145,8 @@ class BAU_OT_UpdateAddon(Operator):
                     result = update_addon(addon_entry, "v" + addon_entry.latest_rel_ver_name)
                 else:
                     result = update_addon(addon_entry, "v" + addon_entry.latest_dev_ver_name)
+                
+                check_update(addon_entry)
                     
                 return result
 

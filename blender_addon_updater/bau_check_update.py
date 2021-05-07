@@ -16,11 +16,12 @@ tags = {
     'rc': 3
 }
 
-def check_update(addon_entry, current_version):
+def check_update(addon_entry):
 
     wm = bpy.context.window_manager
     addon = sys.modules.get(addon_entry.name)
     git_url = addon.bl_info['git_url'].replace("github.com/", "api.github.com/repos/")
+    current_version = addon.bl_info['version']
 
     try:
         response_tags = requests.get(git_url + "/tags")
