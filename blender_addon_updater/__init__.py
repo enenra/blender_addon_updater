@@ -77,7 +77,7 @@ def load_handler(dummy):
     
     for entry in wm.bau.addons:
         addon = sys.modules.get(entry.name)
-        check_update(entry, addon.bl_info['version'])
+        check_update(entry)
     
     load_config()
 
@@ -106,7 +106,7 @@ def bau_loop():
 
         for entry in wm.bau.addons:
             addon = sys.modules.get(entry.name)
-            check_update(entry, addon.bl_info['version'])
+            check_update(entry)
 
         save_config()
 

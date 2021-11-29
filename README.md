@@ -6,4 +6,4 @@ Blender Addon Updater enables the updating of other Blender addons with but a fe
 ## For Users
 
 ## For Addon Developers
-I will write up a guide on integration and provide the necessary files as soon as I get around to it.
+I recommend waiting on implementing this addon until it gets a bit further in its development.
