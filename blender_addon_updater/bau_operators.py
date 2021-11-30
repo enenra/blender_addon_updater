@@ -2,7 +2,7 @@ import bpy
 import sys
 
 from bpy.types  import Operator
-from bpy.props  import StringProperty, IntProperty, BoolProperty
+from bpy.props  import StringProperty, IntProperty, BoolProperty, EnumProperty
 
 from .bau_check_update  import check_update
 from .bau_update_addon  import update_addon
@@ -18,6 +18,8 @@ class BAU_OT_RegisterAddon(Operator):
     name: StringProperty()
 
     display_changelog: BoolProperty()
+    
+    download_method: EnumProperty()
 
     dev_mode: BoolProperty()
 
@@ -34,6 +36,7 @@ class BAU_OT_RegisterAddon(Operator):
             entry = wm.bau.addons.add()
             entry.name = self.name
             entry.display_changelog = self.display_changelog
+            entry.download_method = self.download_method
             entry.dev_mode = self.dev_mode
 
             check_update(entry)

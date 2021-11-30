@@ -68,6 +68,15 @@ class BAU_Addon(PropertyGroup):
         unit='TIME'
     )
 
+    download_method: EnumProperty(
+        name='Download Method',
+        items=(
+            ('zipball', 'Zipball', ''),
+            ('asset', 'Asset', '')
+            ),
+        default='zipball'
+    )
+
     dev_mode: BoolProperty(
         name = "Dev Mode",
         description = "Whether to include development versions",

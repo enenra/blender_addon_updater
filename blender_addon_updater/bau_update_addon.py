@@ -26,11 +26,23 @@ def update_addon(addon_entry, tag):
             found = False
             for release in json_releases:
                 if release['tag_name'] == tag:
-                    download_url = release['zipball_url']
-                    found = True
-                    break
+
+                    if addon_entry.download_method == 'zipball':
+                        download_url = release['zipball_url']
+                        found = True
+                        break
+
+                    elif addon_entry.download_method == 'asset' and 'assets' in release:
+                        for asset in release['assets']:
+                            if asset['name'].endswith(f"{addon_entry.name}_{tag}.zip"):
+                                download_url = release['browser_download_url']
+                                found = True
+                                break
+                        break
             
             if found:
+                print("FOUND")
+                return {'FINISHED'}
                 directory = tempfile.mkdtemp()
                 download_path = os.path.join(directory, addon_entry.name + "_" + tag + ".zip")
 
@@ -59,6 +71,7 @@ def update_addon(addon_entry, tag):
                 return {'FINISHED'}
 
             else:
+                addon_entry.connection_status = "Release could not be found."
                 return {'CANCELLED'}
             
 
