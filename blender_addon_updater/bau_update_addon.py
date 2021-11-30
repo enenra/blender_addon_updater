@@ -41,8 +41,6 @@ def update_addon(addon_entry, tag):
                         break
             
             if found:
-                print("FOUND")
-                return {'FINISHED'}
                 directory = tempfile.mkdtemp()
                 download_path = os.path.join(directory, addon_entry.name + "_" + tag + ".zip")
 
