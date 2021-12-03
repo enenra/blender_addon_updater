@@ -19,7 +19,13 @@ class BAU_OT_RegisterAddon(Operator):
 
     display_changelog: BoolProperty()
     
-    download_method: EnumProperty()
+    download_method: EnumProperty(
+        items=(
+            ('zipball', 'Zipball', ''),
+            ('asset', 'Asset', '')
+            ),
+        default='zipball'
+    )
 
     dev_mode: BoolProperty()
 
