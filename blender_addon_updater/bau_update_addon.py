@@ -35,7 +35,7 @@ def update_addon(addon_entry, tag):
                     elif addon_entry.download_method == 'asset' and 'assets' in release:
                         for asset in release['assets']:
                             if asset['name'].endswith(f"{addon_entry.name}_{tag}.zip"):
-                                download_url = release['browser_download_url']
+                                download_url = asset['browser_download_url']
                                 found = True
                                 break
                         break
