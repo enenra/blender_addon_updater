@@ -10,8 +10,6 @@ import glob
 
 
 def update_addon(addon_entry, tag):
-
-    wm = bpy.context.window_manager
     addon = sys.modules.get(addon_entry.name)
     
     git_url = addon.bl_info['git_url'].replace("github.com/", "api.github.com/repos/")
@@ -34,7 +32,7 @@ def update_addon(addon_entry, tag):
 
                     elif addon_entry.download_method == 'asset' and 'assets' in release:
                         for asset in release['assets']:
-                            if asset['name'].endswith(f"{addon_entry.name}_{tag}.zip"):
+                            if asset['name'] == f"{addon_entry.name}_{tag}.zip":
                                 download_url = asset['browser_download_url']
                                 found = True
                                 break
@@ -42,7 +40,7 @@ def update_addon(addon_entry, tag):
             
             if found:
                 directory = tempfile.mkdtemp()
-                download_path = os.path.join(directory, addon_entry.name + "_" + tag + ".zip")
+                download_path = os.path.join(directory, f"{addon_entry.name}_{tag}.zip")
 
                 try:
                     addon_zip = download_repackage_zip(download_url, directory, download_path)
@@ -77,6 +75,9 @@ def update_addon(addon_entry, tag):
             addon_entry.connection_status = "Rate limit exceeded!"
             return {'CANCELLED'}
 
+        else:
+            addon_entry.connection_status = "Release could not be found."
+
     except Exception as e:
         print(e)
         addon_entry.connection_status = "Connection Failed!"
@@ -90,7 +91,7 @@ def download_repackage_zip(url, directory, save_path, chunk_size=128):
             fd.write(chunk)
 
     with zipfile.ZipFile(save_path, 'r') as zip_ref:
-        extracted_dir = zip_ref.extractall(directory)
+        zip_ref.extractall(directory)
     
     os.remove(save_path)
 
