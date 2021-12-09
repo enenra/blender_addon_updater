@@ -31,7 +31,6 @@ class BAU_OT_RegisterAddon(Operator):
 
 
     def execute(self, context):
-
         wm = context.window_manager
         addon = sys.modules.get(self.name)
 
@@ -64,7 +63,6 @@ class BAU_OT_UnregisterAddon(Operator):
 
 
     def execute(self, context):
-
         wm = context.window_manager
 
         for idx in range(0, len(wm.bau.addons)):
@@ -86,7 +84,6 @@ class BAU_OT_CheckUpdates(Operator):
 
 
     def execute(self, context):
-
         wm = context.window_manager
         addon = sys.modules.get(self.name)
         
@@ -106,15 +103,14 @@ class BAU_OT_CheckAllUpdates(Operator):
 
 
     def execute(self, context):
-
         wm = context.window_manager
         
         for addon_entry in wm.bau.addons:
             result = check_update(addon_entry)
             if result == {'FINISHED'}:
-                print("BAU: Checked " + addon_entry.name + " for updates.")
+                print(f"BAU: Checked {addon_entry.name} for updates.")
             else:
-                print("BAU: Unable to check " + addon_entry.name + " for updates.")
+                print(f"BAU: Unable to check {addon_entry.name} for updates.")
 
         return {'FINISHED'}
 
@@ -134,7 +130,6 @@ class BAU_OT_UpdateAddon(Operator):
 
 
     def execute(self, context):
-
         wm = context.window_manager
         
         result = {'CANCELLED'}
@@ -157,7 +152,7 @@ class BAU_OT_UpdateAddon(Operator):
                 
                 check_update(addon_entry)
                     
-                return result
+        return result
 
 
 class BAU_OT_SaveConfig(Operator):
@@ -173,7 +168,6 @@ class BAU_OT_SaveConfig(Operator):
 
 
     def execute(self, context):
-
         wm = context.window_manager
         
         if self.name in wm.bau.addons:

@@ -128,7 +128,6 @@ def check_update(addon_entry):
 
 
 def parse_release_notes(body):
-
     body = body.replace("\r", "")
     body = body.replace("`", "")
     body = body[body.find("Changelog"):]

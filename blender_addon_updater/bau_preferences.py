@@ -26,11 +26,8 @@ class BAU_AddonPreferences(AddonPreferences):
     def draw(self, context):
         layout = self.layout
         wm = context.window_manager
-        bau = get_addon()
 
         self.dev_mode = get_addon().bl_info['dev_version'] > 0
-
-        addon_version = str(bau.bl_info['version']).replace("(","").replace(")","").replace(", ", ".")
 
         if __package__ in wm.bau.addons:
             draw_bau_ui(self, context, layout)
@@ -64,7 +61,7 @@ class BAU_AddonPreferences(AddonPreferences):
             box = top_box.box()
             row = box.row()
             version = str(addon.bl_info['version']).replace("(", "").replace(")", "").replace(", ", ".")
-            row.label(text= addon.bl_info['category'] + ": " + addon.bl_info['name'] + " " + version, icon=addon.bl_info['support'])
+            row.label(text= f"{addon.bl_info['category']}: {addon.bl_info['name']} {version}", icon=addon.bl_info['support'])
 
             if self.dev_mode:
                 col = row.column(align=True)
@@ -103,9 +100,7 @@ class BAU_AddonPreferences(AddonPreferences):
 
 
 def save_config():
-
     path = os.path.join(bpy.utils.user_resource('CONFIG'), 'blender_addon_updater.cfg')
-
     data = get_config_json()
     
     with open(path, 'w') as cfg_file:
@@ -113,7 +108,6 @@ def save_config():
 
 
 def load_config():
-
     path = os.path.join(bpy.utils.user_resource('CONFIG'), 'blender_addon_updater.cfg')
 
     if os.path.exists(path):

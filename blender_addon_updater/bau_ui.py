@@ -6,7 +6,6 @@ import time
 
 
 def draw_bau_ui(self, context, element=None):
-
     wm = context.window_manager
     preferences = context.preferences.addons.get(__package__).preferences
 
@@ -40,19 +39,19 @@ def draw_bau_ui(self, context, element=None):
 
     if not bau_entry.dev_mode and bau_entry.rel_ver_needs_update:
         split.alert = True
-        op = split.operator('wm.url_open', text="Update available: " + bau_entry.latest_rel_ver_name, icon='URL')
+        op = split.operator('wm.url_open', text=f"Update available: {bau_entry.latest_rel_ver_name}", icon='URL')
         op.url = addon.bl_info['git_url'] + "/releases/tag/v" + bau_entry.latest_rel_ver_name
 
     elif bau_entry.dev_mode and bau_entry.dev_ver_needs_update:
         split.alert = True
-        op = split.operator('wm.url_open', text="Update available: " + bau_entry.latest_dev_ver_name, icon='URL')
+        op = split.operator('wm.url_open', text=f"Update available: {bau_entry.latest_dev_ver_name}", icon='URL')
         op.url = addon.bl_info['git_url'] + "/releases/tag/v" + bau_entry.latest_dev_ver_name
 
     else:
         if not preferences.dev_mode:
-            split.operator('wm.bau_update_addon', text="Up to date: " + current_version_name, icon='CHECKMARK')
+            split.operator('wm.bau_update_addon', text=f"Up to date: {current_version_name}", icon='CHECKMARK')
         else:
-            split.operator('wm.bau_update_addon', text="Up to date: " + current_version_name + "-" + addon.bl_info['dev_tag'] + "." + str(addon.bl_info['dev_version']), icon='CHECKMARK')
+            split.operator('wm.bau_update_addon', text=f"Up to date: {current_version_name}-{addon.bl_info['dev_tag']}.{addon.bl_info['dev_version']}", icon='CHECKMARK')
         split.enabled = False
 
     split = row.split(align=True)
@@ -103,7 +102,6 @@ def show_changelog(addon, box, changelog, latest_ver_name):
 
 def get_config_json():
     wm = bpy.context.window_manager
-    preferences = bpy.context.preferences.addons.get(__package__).preferences
 
     data = {}
     data['blender_addon_updater'] = []
@@ -126,7 +124,6 @@ def get_config_json():
 
 def set_config_from_json(data):
     wm = bpy.context.window_manager
-    preferences = bpy.context.preferences.addons.get(__package__).preferences
 
     if 'blender_addon_updater' in data:
         cfg = data['blender_addon_updater'][0]

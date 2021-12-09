@@ -19,16 +19,12 @@ from bpy.types import (Panel,
 
 
 def update_rel_ver_needs_update(self, context):
-    wm = context.window_manager
-
     if not self.rel_ver_needs_update and not self.dev_ver_needs_update:
         if self.display_instructions:
             self.display_instructions = False
 
 
 def update_dev_ver_needs_update(self, context):
-    wm = context.window_manager
-
     if not self.rel_ver_needs_update and not self.dev_ver_needs_update:
         if self.display_instructions:
             self.display_instructions = False
