@@ -76,7 +76,6 @@ def load_handler(dummy):
     wm = bpy.context.window_manager
     
     for entry in wm.bau.addons:
-        addon = sys.modules.get(entry.name)
         check_update(entry)
     
     load_config()
@@ -105,7 +104,6 @@ def bau_loop():
                 return 1
 
         for entry in wm.bau.addons:
-            addon = sys.modules.get(entry.name)
             check_update(entry)
 
         save_config()
