@@ -18,7 +18,6 @@ tags = {
 
 def check_update(addon_entry):
 
-    wm = bpy.context.window_manager
     addon = sys.modules.get(addon_entry.name)
     git_url = addon.bl_info['git_url'].replace("github.com/", "api.github.com/repos/")
     current_version = addon.bl_info['version']
@@ -26,7 +25,8 @@ def check_update(addon_entry):
     try:
         response_tags = requests.get(git_url + "/tags")
         response_releases = requests.get(git_url + "/releases")
-    except:
+    except Exception as e:
+        print(e)
         addon_entry.connection_status = "Connection Failed!"
         return {'CANCELLED'}
 
