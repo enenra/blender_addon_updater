@@ -41,9 +41,13 @@ class BAU_AddonPreferences(AddonPreferences):
         row.scale_y = 1.5
         row.scale_x = 1.5
         row.alignment = 'RIGHT'
-        if len(wm.bau.addons) < 1:
+        if len(wm.bau.addons) < 2:
             row.enabled = False
         row.operator('wm.bau_check_all_updates', text="", icon='FILE_REFRESH')
+
+        if len(wm.bau.addons) < 2:
+            row = top_box.row()
+            row.label(text="No addons have been registered yet.")
 
         for entry in wm.bau.addons:
             try:
