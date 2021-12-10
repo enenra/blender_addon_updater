@@ -2,11 +2,13 @@ import bpy
 import os
 import sys
 import requests
-import json
 import tempfile
 import shutil
 import zipfile
 import glob
+
+
+from bau_check_update   import check_update
 
 
 def update_addon(addon_entry, tag):
@@ -63,6 +65,7 @@ def update_addon(addon_entry, tag):
                     return {'CANCELLED'}
 
                 shutil.rmtree(directory)
+                check_update(addon_entry)
 
                 return {'FINISHED'}
 
