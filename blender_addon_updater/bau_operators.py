@@ -149,8 +149,6 @@ class BAU_OT_UpdateAddon(Operator):
                     result = update_addon(addon_entry, "v" + addon_entry.latest_rel_ver_name)
                 else:
                     result = update_addon(addon_entry, "v" + addon_entry.latest_dev_ver_name)
-                
-                check_update(addon_entry)
                     
         return result
 
