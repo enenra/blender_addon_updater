@@ -8,7 +8,7 @@ import zipfile
 import glob
 
 
-from bau_check_update   import check_update
+from .bau_check_update  import check_update
 
 
 def update_addon(addon_entry, tag):
