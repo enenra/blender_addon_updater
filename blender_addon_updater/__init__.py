@@ -5,7 +5,7 @@ bl_info = {
     "version": (0, 2, 0),
     "dev_version": 1,
     "dev_tag": "beta",
-    "blender": (2, 92, 0),
+    "blender": (3, 0, 0),
     "location": "Add-ons",
     "warning": "",
     "wiki_url": "https://github.com/enenra/blender_addon_updater/wiki",
