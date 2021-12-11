@@ -108,11 +108,11 @@ def bau_loop():
 
         save_config()
 
-        return 600
+        return 3600
 
     except Exception as e:
         print(e)
-        return 600
+        return 3600
 
 
 if __name__ == "__main__":
