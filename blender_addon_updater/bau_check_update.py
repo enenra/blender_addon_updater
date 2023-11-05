@@ -82,6 +82,7 @@ def check_update(addon_entry):
                     dev_version = dev_version[dev_version.find(".") + 1:]
 
                     if current_version < latest_dev_version or len(rel_versions) > 0 and current_version < latest_rel_version:
+                        addon_entry.rel_ver_needs_update = True
                         addon_entry.dev_ver_needs_update = True
                     elif current_version == latest_dev_version and tags[addon.bl_info['dev_tag']] < tags[dev_tag]:
                         addon_entry.dev_ver_needs_update = True
@@ -130,6 +131,8 @@ def check_update(addon_entry):
 def parse_release_notes(body):
     body = body.replace("\r", "")
     body = body.replace("`", "")
+    body = body.replace("[", "")
+    body = body.replace("]", "")
     body = body[body.find("Changelog"):]
     body = body[:body.find("\n# ")]
 
